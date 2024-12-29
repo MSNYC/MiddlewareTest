@@ -13,8 +13,8 @@ MIDDLEWARE_API_KEY = os.getenv("MIDDLEWARE_API_KEY")
 # Create a Flask app
 app = Flask(__name__)
 
-# Define the endpoint for handling requests from GPT
-@app.route('/fetch-news', methods=['POST'])
+# Define the root endpoint for handling requests from GPT
+@app.route('/', methods=['POST'])
 def fetch_news():
     try:
         # Verify the middleware API key
