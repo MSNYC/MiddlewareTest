@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Get the API key from the environment variable
-API_KEY = os.getenv("NEWS_API_KEY")
+# Get the API keys from environment variables
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+MIDDLEWARE_API_KEY = os.getenv("MIDDLEWARE_API_KEY")
 
 # Create a Flask app
 app = Flask(__name__)
@@ -16,6 +17,11 @@ app = Flask(__name__)
 @app.route('/fetch-news', methods=['POST'])
 def fetch_news():
     try:
+        # Verify the middleware API key
+        request_api_key = request.headers.get("X-API-KEY")
+        if request_api_key != MIDDLEWARE_API_KEY:
+            return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
         # Parse the incoming request data
         gpt_request = request.json
         query = gpt_request.get("q", "")
@@ -30,7 +36,7 @@ def fetch_news():
             "q": query,
             "language": language,
             "sortBy": sort_by,
-            "apiKey": API_KEY
+            "apiKey": NEWS_API_KEY
         }
 
         # Add optional parameters if provided
